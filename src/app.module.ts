@@ -11,7 +11,7 @@ import { UserModule } from './user/user.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      password: '123456',
+      password: '',
       username: 'postgres',
       entities: [User],
       database: 'postgres',
