@@ -1,16 +1,27 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from './model/dto/create-user.dto';
+import { UpdateUserDto } from './model/dto/update-user.dto';
+import { User } from './model/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const username = createUserDto.username;
+    const saltOrRounds = 10;
+    const passwd = createUserDto.password;
+    const password = await bcrypt.hash(passwd, saltOrRounds);
+    const name = createUserDto.name;
+    const obj = {
+      username,
+      password,
+      name
+    }
+    return this.userService.create(obj);
   }
 
   @Get()
