@@ -11,17 +11,8 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const username = createUserDto.username;
-    const saltOrRounds = 10;
-    const passwd = createUserDto.password;
-    const password = await bcrypt.hash(passwd, saltOrRounds);
-    const name = createUserDto.name;
-    const obj = {
-      username,
-      password,
-      name
-    }
-    return this.userService.create(obj);
+    const user = await this.userService.hashPassword(createUserDto);
+    return this.userService.create(user);
   }
 
   @Get()
@@ -36,17 +27,8 @@ export class UserController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const username = updateUserDto.username;
-    const saltOrRounds = 10;
-    const passwd = updateUserDto.password;
-    const password = await bcrypt.hash(passwd, saltOrRounds);
-    const name = updateUserDto.name;
-    const obj = {
-      username,
-      password,
-      name
-    }
-    return this.userService.update(+id, obj);
+    const user = await this.userService.hashPassword(updateUserDto);
+    return this.userService.update(+id, user);
   }
 
   @Delete(':id')

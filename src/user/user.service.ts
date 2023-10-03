@@ -5,10 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './model/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserInterface } from './model/user.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
   create(createUserDto: CreateUserDto) {
@@ -30,5 +30,19 @@ export class UserService {
 
   remove(id: number) {
     return this.userRepository.delete({ id });
+  }
+
+  async hashPassword(userInterface: UserInterface) {
+    const username = userInterface.username;
+    const saltOrRounds = 10;
+    const passwd = userInterface.password;
+    const password = await bcrypt.hash(passwd, saltOrRounds);
+    const name = userInterface.name;
+    const data = {
+      username,
+      password,
+      name
+    }
+    return data;
   }
 }
