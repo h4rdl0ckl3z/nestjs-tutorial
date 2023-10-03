@@ -4,6 +4,7 @@ import { UpdateUserDto } from './model/dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './model/entities/user.entity';
 import { Repository } from 'typeorm';
+import { UserInterface } from './model/user.interface';
 
 @Injectable()
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  findAll(): Promise<User[]> {
+  findAll(): Promise<UserInterface[]> {
     return this.userRepository.find();
   }
 

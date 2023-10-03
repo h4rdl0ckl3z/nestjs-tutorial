@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common
 import { UserService } from './user.service';
 import { CreateUserDto } from './model/dto/create-user.dto';
 import { UpdateUserDto } from './model/dto/update-user.dto';
-import { User } from './model/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { UserInterface } from './model/user.interface';
 
 @Controller('user')
 export class UserController {
@@ -25,7 +25,7 @@ export class UserController {
   }
 
   @Get()
-  findAll(): Promise<User[]> {
+  findAll(): Promise<UserInterface[]> {
     return this.userService.findAll();
   }
 
@@ -35,8 +35,19 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const username = updateUserDto.username;
+    const saltOrRounds = 10;
+    const passwd = updateUserDto.password;
+    const password = await bcrypt.hash(passwd, saltOrRounds);
+    const name = updateUserDto.name;
+    const obj = {
+      id,
+      username,
+      password,
+      name
+    }
+    return this.userService.update(+id, obj);
   }
 
   @Delete(':id')
