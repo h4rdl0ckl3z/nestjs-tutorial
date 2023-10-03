@@ -42,7 +42,6 @@ export class UserController {
     const password = await bcrypt.hash(passwd, saltOrRounds);
     const name = updateUserDto.name;
     const obj = {
-      id,
       username,
       password,
       name
